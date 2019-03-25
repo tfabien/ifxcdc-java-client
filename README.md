@@ -1,3 +1,5 @@
+> **This project is up for adoption** - Feel free to fork it.
+
 # Informix CDC Java client
 This is an Informix CDC client that allows you to capture and unserialize changes on one or multiple tables of the database
 
@@ -5,8 +7,6 @@ It implements methods described by IBM in this sections: https://www.ibm.com/sup
 
 # Features - Work in progress
 This project is still a work in progress, some data types are not correctly unserialized.
-
-**This project is up for adoption** - Feel free to fork this project.
 
 | Data type | Status | Comment |
 |-----------|--------|---------|
