@@ -34,6 +34,67 @@ Use the provided docker-compose file to launch an Informix database instance, an
 dbaccess -e informix < $INFORMIXDIR/etc/syscdcv1.sql
 ```
 
+# Usage
+See Unit tests for detailed use.
+
+```java
+// 1 - Create the CDCConnection
+onnectionDetails connectionDetails = new CDCConnectionDetails(connectionString);
+connectionDetails.setUsername(username);
+connectionDetails.setPassword(password);
+connectionDetails.setInformixServer(informixServer);
+connectionDetails.setMaxRecordsPerReturn(maxRecordsPerReturn);
+connectionDetails.setCdcTimeout(timeout);
+connectionDetails.setInterfaceMajorVersion(1);
+connectionDetails.setInterfaceMinorVersion(1);
+connectionDetails.setDebugging(false);
+cdcConnection = new CDCConnection(connectionDetails);
+cdcConnection.connect();
+
+// 2 - Enable capture on the table
+cdcConnection.enableCapture(catalog + ":" + schema + "." + table, columnNames);
+
+// 3 - Wait for changes
+boolean exit = false;
+do {
+	log.debug("Reading...");
+	cdcRecords = cdcConnection.readData();
+	if (!cdcRecords.isEmpty()) {
+		log.debug("Got " + cdcRecords.size() + " record(s) (" + cdcConnection.getConnectionDetails().getMaxRecordsPerReturn() + "max)");
+	}
+	for (CDCRecord cdcRecord : cdcRecords) {
+		// Process record
+    processRecord(cdcRecord);
+    // Exit if no change has been captured (timeout)
+		if (cdcRecord.isTimeoutRecord()) {
+			exit = true;
+		}
+	}
+} while (!exit);
+
+// 4 - Process records
+private void processRecord(CDCRecord record) {
+    // Ignore timeout records
+		if (!record.isTimeoutRecord()) {
+			log.debug("{}", record);
+		}
+    // A single Metadata record is fired when starting capture, save this records for later, they'll be used for unserialization
+		if (record.isMetadataRecord()) {
+			CDCMetadataRecord cdcMetadataRecord = (CDCMetadataRecord) record;
+			metadataRecords.put(cdcMetadataRecord.getUserData(), cdcMetadataRecord);
+		}
+    // An operationnal record is fired when  an INSERT/UPDATE/DELETE operation is done
+		if (record.isOperationalRecord()) {
+			CDCOperationRecord cdcOperationRecord = (CDCOperationRecord) record;
+			CDCMetadataRecord cdcMetadataRecord = metadataRecords.get(cdcOperationRecord.getUserData());
+      
+      // Parse the payload data for the operation record to get the column values
+			Map<String, Object> cdcOperationRecordPayload = CDCMessageFactory.parseCDCRecordPayload(cdcOperationRecord, cdcMetadataRecord);
+      log.info("{}", cdcOperationRecordPayload);
+	  }
+}
+```
+
 # Implementation details
 
 Implementation for the CDC client is loosely based on sources published by pushtechnology: https://www.programcreek.com/java-api-examples/index.php?source_dir=adapters-master/cdc/src/com/pushtechnology/diffusion/api/adapters/cdc/CDCConnection.java#
