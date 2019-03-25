@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  informix:
+    image: ibmcom/informix-developer-database:latest
+    ports:
+      - 9088:9088
+      - 9089:9089
+      - 27017:27017
+      - 27018:27018
+    privileged: true
+    environment:
+      LICENSE: accept
