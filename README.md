@@ -4,7 +4,9 @@ This is an Informix CDC client that allows you to capture and unserialize change
 It implements methods described by IBM in this sections: https://www.ibm.com/support/knowledgecenter/en/SSGU8G_12.1.0/com.ibm.cdc.doc/ids_cdc_057.htm
 
 # Features - Work in progress
-This project is still a work in progress, some data types are not correctly unserialized. Feel free to fork this project.
+This project is still a work in progress, some data types are not correctly unserialized.
+
+Feel free to fork this project.
 
 | Data type | Status | Comment |
 |-----------|--------|---------|
