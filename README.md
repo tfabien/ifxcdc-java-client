@@ -6,7 +6,7 @@ It implements methods described by IBM in this sections: https://www.ibm.com/sup
 # Features - Work in progress
 This project is still a work in progress, some data types are not correctly unserialized.
 
-Feel free to fork this project.
+**This project is up for adoption** - Feel free to fork this project.
 
 | Data type | Status | Comment |
 |-----------|--------|---------|
