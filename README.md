@@ -59,19 +59,17 @@ cdcConnection.enableCapture(catalog + ":" + schema + "." + table, columnNames);
 // 3 - Wait for changes
 boolean exit = false;
 do {
-	log.debug("Reading...");
-	cdcRecords = cdcConnection.readData();
-	if (!cdcRecords.isEmpty()) {
-		log.debug("Got " + cdcRecords.size() + " record(s) (" + cdcConnection.getConnectionDetails().getMaxRecordsPerReturn() + "max)");
-	}
-	for (CDCRecord cdcRecord : cdcRecords) {
-		// Process record
+  log.debug("Reading...");
+  cdcRecords = cdcConnection.readData();
+  if (!cdcRecords.isEmpty()) {
+    log.debug("Got " + cdcRecords.size() + " record(s) (" + cdcConnection.getConnectionDetails().getMaxRecordsPerReturn() + "max)");
+  }
+  for (CDCRecord cdcRecord : cdcRecords) {
+    // Process record (see @4)
     processRecord(cdcRecord);
     // Exit if no change has been captured (timeout)
-		if (cdcRecord.isTimeoutRecord()) {
-			exit = true;
-		}
-	}
+    if (cdcRecord.isTimeoutRecord()) { exit = true; }
+  }
 } while (!exit);
 
 // 4 - Process records
