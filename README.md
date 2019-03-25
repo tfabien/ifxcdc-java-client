@@ -75,23 +75,22 @@ do {
 // 4 - Process records
 private void processRecord(CDCRecord record) {
     // Ignore timeout records
-		if (!record.isTimeoutRecord()) {
-			log.debug("{}", record);
-		}
+    if (!record.isTimeoutRecord()) {
+    	log.debug("{}", record);
+    }
     // A single Metadata record is fired when starting capture, save this records for later, they'll be used for unserialization
-		if (record.isMetadataRecord()) {
-			CDCMetadataRecord cdcMetadataRecord = (CDCMetadataRecord) record;
-			metadataRecords.put(cdcMetadataRecord.getUserData(), cdcMetadataRecord);
-		}
+    if (record.isMetadataRecord()) {
+    	CDCMetadataRecord cdcMetadataRecord = (CDCMetadataRecord) record;
+    	metadataRecords.put(cdcMetadataRecord.getUserData(), cdcMetadataRecord);
+    }
     // An operationnal record is fired when  an INSERT/UPDATE/DELETE operation is done
-		if (record.isOperationalRecord()) {
-			CDCOperationRecord cdcOperationRecord = (CDCOperationRecord) record;
-			CDCMetadataRecord cdcMetadataRecord = metadataRecords.get(cdcOperationRecord.getUserData());
-      
+    if (record.isOperationalRecord()) {
+      CDCOperationRecord cdcOperationRecord = (CDCOperationRecord) record;
+      CDCMetadataRecord cdcMetadataRecord = metadataRecords.get(cdcOperationRecord.getUserData());
       // Parse the payload data for the operation record to get the column values
-			Map<String, Object> cdcOperationRecordPayload = CDCMessageFactory.parseCDCRecordPayload(cdcOperationRecord, cdcMetadataRecord);
+      Map<String, Object> cdcOperationRecordPayload = CDCMessageFactory.parseCDCRecordPayload(cdcOperationRecord, cdcMetadataRecord);
       log.info("{}", cdcOperationRecordPayload);
-	  }
+    }
 }
 ```
 
