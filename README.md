@@ -13,7 +13,7 @@ This project is still a work in progress, some data types are not correctly unse
 | FLOAT | Supported ||
 | SMALLFLOAT | Supported ||
 | DECIMAL | Supported ||
-| SERIAL | Not supported ||
+| SERIAL | Not supported | Unit test fails and needs to be adapted |
 | DATE | Not supported ||
 | MONEY | Supported ||
 | DATETIME | Not supported | Supported up to "YEAR TO SECONDS" precision |
