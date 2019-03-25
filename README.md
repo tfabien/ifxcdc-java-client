@@ -5,25 +5,26 @@ It implements methods described by IBM in this sections: https://www.ibm.com/sup
 # Features - Work in progress
 This project is still a work in progress, some data types are not correctly unserialized. Feel free to fork this project.
 
-| Data type | Status |
-| CHAR(10) | Supported |
-| SMALLINT | Supported |
-| INTEGER | Supported |
-| FLOAT | Supported |
-| SMALLFLOAT | Supported |
-| DECIMAL | Supported |
-| SERIAL | Not supported |
-| DATE | Not supported |
-| MONEY | Supported |
-| DATETIME YEAR TO FRACTION(3) | Not supported |
-| VARCHAR(255) | Supported |
-| NCHAR(20) | Supported |
-| NVARCHAR(20) | Supported |
-| INT8 | Not supported |
-| SERIAL8 | Not supported |
-| LVARCHAR(1024) | Supported |
-| BOOLEAN | Supported |
-| BIGINT | Not supported |
+| Data type | Status | Comment |
+|-----------|--------|---------|
+| CHAR | Supported ||
+| SMALLINT | Supported ||
+| INTEGER | Supported ||
+| FLOAT | Supported ||
+| SMALLFLOAT | Supported ||
+| DECIMAL | Supported ||
+| SERIAL | Not supported ||
+| DATE | Not supported ||
+| MONEY | Supported ||
+| DATETIME | Not supported | Supported up to "YEAR TO SECONDS" precision |
+| VARCHAR | Supported ||
+| NCHAR | Supported ||
+| NVARCHAR | Supported ||
+| INT8 | Not supported ||
+| SERIAL8 | Supported | Unit test fails and needs to be adapted |
+| LVARCHAR | Supported ||
+| BOOLEAN | Supported ||
+| BIGINT | Not supported ||
 
 A unit test is provided to test the various data types.
 Use the provided docker-compose file to launch an Informix database instance, and use this command to create the CDC schema before running the test.
