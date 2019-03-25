@@ -1,5 +1,6 @@
 # Informix CDC Java client
 This is an Informix CDC client that allows you to capture and unserialize changes on one or multiple tables of the database
+
 It implements methods described by IBM in this sections: https://www.ibm.com/support/knowledgecenter/en/SSGU8G_12.1.0/com.ibm.cdc.doc/ids_cdc_057.htm
 
 # Features - Work in progress
@@ -27,6 +28,7 @@ This project is still a work in progress, some data types are not correctly unse
 | BIGINT | Not supported ||
 
 A unit test is provided to test the various data types.
+
 Use the provided docker-compose file to launch an Informix database instance, and use this command to create the CDC schema before running the test.
 ```bash
 dbaccess -e informix < $INFORMIXDIR/etc/syscdcv1.sql
