@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.ibm.informix</groupId>
 			<artifactId>jdbc</artifactId>
-			<version>4.10.12</version>
+			<version>4.50.1</version>
 		</dependency>
 
 		<dependency>
