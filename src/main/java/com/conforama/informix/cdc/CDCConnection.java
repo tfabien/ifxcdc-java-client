@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.conforama.informix.cdc.exceptions.CDCErrorCodeImpl;
+import com.conforama.informix.cdc.exceptions.CDCException;
 import com.conforama.informix.cdc.model.CDCMessageFactory;
 import com.conforama.informix.cdc.model.common.CDCRecord;
 import com.informix.jdbc.IfxSmartBlob;
@@ -56,9 +58,8 @@ public final class CDCConnection {
      *
      * @param buffer the buffer
      * @return String representation of the VarChar
-     * @throws Exception if unable to get Varchar
      */
-    public static String getVarchar(ByteBuffer buffer) throws Exception {
+    public static String getVarchar(ByteBuffer buffer) {
         try {
             int length = buffer.get();
             byte[] tmp = new byte[length];
@@ -71,7 +72,8 @@ public final class CDCConnection {
 
             return new String(tmp);
         } catch (BufferUnderflowException ex) {
-            throw new Exception("BufferUnderFlow exception", ex);
+            log.error("", ex);
+            throw new CDCException(CDCErrorCodeImpl.BUFFER_UNDER_FLOW);
         }
     }
 
@@ -94,13 +96,13 @@ public final class CDCConnection {
      *
      * @param buffer the buffer
      * @return int value
-     * @throws Exception
      */
-    public static int getInteger(ByteBuffer buffer) throws Exception {
+    public static int getInteger(ByteBuffer buffer) {
         try {
             return buffer.getInt();
         } catch (BufferUnderflowException ex) {
-            throw new Exception("BufferUnderflow exception", ex);
+            log.error("", ex);
+            throw new CDCException(CDCErrorCodeImpl.BUFFER_UNDER_FLOW);
         }
     }
 
@@ -138,7 +140,8 @@ public final class CDCConnection {
         try {
             Class.forName(INFORMIX_DRIVER_CLASS);
         } catch (ClassNotFoundException ex) {
-            throw new Exception("CDCConnection: Unable to find class " + INFORMIX_DRIVER_CLASS, ex);
+            log.error("", ex);
+            throw new CDCException(CDCErrorCodeImpl.CLASS_NOT_FOUND);
         }
 
         try {

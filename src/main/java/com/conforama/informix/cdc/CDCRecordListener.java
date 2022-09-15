@@ -20,6 +20,6 @@ public interface CDCRecordListener {
 	 * @param record
 	 *            a CDC Record
 	 */
-	public void onCDCRecord(CDCRecord record);
+	void onCDCRecord(CDCRecord record);
 
 }
