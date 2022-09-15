@@ -19,11 +19,11 @@ import com.informix.jdbc.IfxSmartBlob;
 
 public final class CDCConnection {
 
-	private static Logger log = LoggerFactory.getLogger(CDCConnection.class);
+	private static final Logger log = LoggerFactory.getLogger(CDCConnection.class);
 
-	private int READ_DATA_BUFFER_LENGTH = 40960;
+	private static final int READ_DATA_BUFFER_LENGTH = 40960;
 
-	private CDCConnectionDetails connectionDetails = null;
+	private CDCConnectionDetails connectionDetails;
 
 	private Connection connection;
 
@@ -104,9 +104,8 @@ public final class CDCConnection {
 			throw new Exception("CDCConnection: unable to connect to the database : " + ex.getLocalizedMessage(), ex);
 		}
 
-		try {
+		try (CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_opensess(?,?,?,?,?,?)")) {
 			log.debug("[connect] Open CDC session - cdc_opensess");
-			CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_opensess(?,?,?,?,?,?)");
 
 			cstmt.setString(1, connectionDetails.getInformixServer());
 
@@ -259,9 +258,8 @@ public final class CDCConnection {
 	 *             if unable to stop
 	 */
 	public void disableCapture(String qualifiedTableName) throws Exception {
-		try {
+		try (CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_endcapture(?,?,?)")) {
 			log.debug("[disableCapture] End CDC capture - cdc_endcapture");
-			CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_endcapture(?,?,?)");
 
 			cstmt.setInt(1, sessionID);
 			cstmt.setLong(2, 0);
@@ -289,9 +287,8 @@ public final class CDCConnection {
 	 *             if unable to start capture.
 	 */
 	public void startCapture(long position) throws Exception {
-		try {
+		try (CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_activatesess(?,?)")) {
 			log.debug("[startCapture] Activate CDC session - cdc_activatesess");
-			CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_activatesess(?,?)");
 			cstmt.setInt(1, sessionID);
 			cstmt.setLong(2, position);
 
@@ -316,9 +313,8 @@ public final class CDCConnection {
 	 *             if unable to stop capture.
 	 */
 	public void stopCapture() throws Exception {
-		try {
+		try (CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_deactivatesess(?)")) {
 			log.debug("[stopCapture] De-activate CDC session - cdc_deactivatesess");
-			CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_deactivatesess(?)");
 			cstmt.setInt(1, sessionID);
 
 			ResultSet rs = cstmt.executeQuery();
@@ -335,9 +331,9 @@ public final class CDCConnection {
 
 	public Vector<CDCRecord> readData() throws SQLException {
 		log.debug("[readData] Get data from SmartBlob - IfxLoRead");
-		byte[] b = new byte[READ_DATA_BUFFER_LENGTH]; // TODO: This needs to be tunable..
+		byte[] b = new byte[READ_DATA_BUFFER_LENGTH];
 		IfxSmartBlob smartBlob = new IfxSmartBlob(getSQLConnection());
-		int availableBytes = smartBlob.IfxLoRead(getCDCSessionID(), b, b.length); // TODO: concatenate if availableBytes
+		int availableBytes = smartBlob.IfxLoRead(getCDCSessionID(), b, b.length);
 																					// < recordSize
 		return CDCMessageFactory.createCDCRecords(b, availableBytes, this);
 	}
@@ -425,17 +421,16 @@ public final class CDCConnection {
 
 	private String getErrorDescription(int errCode) throws SQLException {
 		String errDesc = "Unknow error " + errCode;
-		CallableStatement cstmt = connection.prepareCall("select errcode,errname,errdesc from informix.syscdcerrcodes where errcode=?");
-		cstmt.setInt(1, errCode);
-		ResultSet rs = cstmt.executeQuery();
-		if (rs.next()) {
-			String errcode = rs.getString(1);
-			String errname = rs.getString(2);
-			String errdesc = rs.getString(3);
-			errDesc = errname + " (" + errcode + ") " + errdesc;
+		try (CallableStatement cstmt = connection.prepareCall("select errcode,errname,errdesc from informix.syscdcerrcodes where errcode=?");
+			 ResultSet rs = cstmt.executeQuery()) {
+			cstmt.setInt(1, errCode);
+			if (rs.next()) {
+				String errcode = rs.getString(1);
+				String errname = rs.getString(2);
+				String errdesc = rs.getString(3);
+				errDesc = errname + " (" + errcode + ") " + errdesc;
+			}
 		}
-		rs.close();
-		cstmt.close();
 		return errDesc;
 	}
 }
