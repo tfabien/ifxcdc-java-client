@@ -8,6 +8,8 @@ public class CDCUpdateAfterRecord extends CDCOperationRecord {
 	public CDCUpdateAfterRecord(CDCHeader header) {
 		super(header);
 	}
+
+	@Override
 	public boolean isUpdateAfterRecord() {
 		return true;
 	}

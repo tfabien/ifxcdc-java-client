@@ -11,29 +11,29 @@ public class CDCHeader {
 	/**
 	 * The number of bytes in the common and CDC record-specific headers.
 	 */
-	private int headerSize;
+	private final int headerSize;
 
 	/**
 	 * The number of bytes of data in the record after the common and CDC
 	 * record-specific headers.
 	 */
-	private int payloadSize;
+	private final int payloadSize;
 
 	/**
 	 * The packetization scheme number of one of the packetization schemes contained
 	 * in the syscdcpacketschemes table. The only packetization scheme is 66,
 	 * CDC_PKTSCHEME_LRECBINARY.
 	 */
-	private int packetType;
+	private final int packetType;
 	
 	/**
 	 * The record number of one of the CDC records contained in the syscdcrectypes
 	 * table.
 	 */
-	private int logRecordType;
+	private final int logRecordType;
 
-	private ByteBuffer header;
-	private ByteBuffer payload;
+	private final ByteBuffer header;
+	private final ByteBuffer payload;
 
 	/**
 	 * Constructor.
@@ -43,7 +43,7 @@ public class CDCHeader {
 	 */
 	public CDCHeader(byte[] data, int length) {
 
-		ByteBuffer buffer = ByteBuffer.allocate(length); // CDCConstants.CDC_HEADER_SIZE);
+		ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.put(data, 0, length);
 		buffer.flip();
 
@@ -127,9 +127,6 @@ public class CDCHeader {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
-//		return "CDCRecord: Header [" + theHeaderSize + "] Payload[" + thePayloadSize + "] Packet Type[" + thePacketType
-//				+ "] Log Type [" + theLogRecordType + "] header[" + Utils.byteBufferToHex(theHeader) + "]: payload ["
-//				+ Utils.byteBufferToHex(thePayload) + "]";
 	}
 
 }

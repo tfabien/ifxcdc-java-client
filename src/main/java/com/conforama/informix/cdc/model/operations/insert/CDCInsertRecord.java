@@ -9,6 +9,7 @@ public class CDCInsertRecord extends CDCOperationRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isInsertRecord() {
 		return true;
 	}

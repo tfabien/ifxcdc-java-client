@@ -34,6 +34,7 @@ public abstract class CDCOperationRecord extends CDCRecord {
 		return transactionID;
 	}
 
+	@Override
 	public final int getUserData() {
 		return userData;
 	}
@@ -47,6 +48,7 @@ public abstract class CDCOperationRecord extends CDCRecord {
 		return true;
 	}
 
+	@Override
 	public final boolean isOperationalRecord() {
 		return true;
 	}

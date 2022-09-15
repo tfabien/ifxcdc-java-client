@@ -18,6 +18,7 @@ public class CDCBeginTransactionRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isBeginTransactionRecord() {
 		return true;
 	}

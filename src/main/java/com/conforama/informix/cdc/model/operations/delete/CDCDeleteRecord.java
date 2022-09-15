@@ -9,6 +9,7 @@ public class CDCDeleteRecord extends CDCOperationRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isDeleteRecord() {
 		return true;
 	}

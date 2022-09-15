@@ -14,6 +14,7 @@ public class CDCRollBackRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isRollbackRecord() {
 		return true;
 	}

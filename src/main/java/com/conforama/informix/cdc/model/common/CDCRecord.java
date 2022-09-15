@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.conforama.informix.cdc.CDCConstants;
 
-abstract public class CDCRecord {
+public abstract class CDCRecord {
 	
 	private final CDCHeader header;
 

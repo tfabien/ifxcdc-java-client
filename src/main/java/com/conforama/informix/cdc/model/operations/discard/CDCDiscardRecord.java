@@ -14,6 +14,7 @@ public class CDCDiscardRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isDiscardRecord() {
 		return true;
 	}

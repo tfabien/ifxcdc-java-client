@@ -15,6 +15,7 @@ public class CDCTruncateRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isTruncateRecord() {
 		return false;
 	}
