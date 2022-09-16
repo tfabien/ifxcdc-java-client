@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.conforama.informix.cdc.CDCConnection;
 import com.conforama.informix.cdc.CDCConstants;
 import com.conforama.informix.cdc.model.common.CDCHeader;
 import com.conforama.informix.cdc.model.common.CDCRecord;
@@ -40,7 +39,7 @@ public class CDCMessageFactory {
     private static final Logger log = LoggerFactory.getLogger(CDCMessageFactory.class);
     private static final int IFX_TYPE_DATETIME_BYTES_LEN = 8;
 
-    public static List<CDCRecord> createCDCRecords(byte[] data, int availableBytes, CDCConnection cdcConnection) {
+    public static List<CDCRecord> createCDCRecords(byte[] data, int availableBytes) {
         LinkedList<CDCRecord> records = new LinkedList<>();
         int index = 0;
         while (index < availableBytes) {

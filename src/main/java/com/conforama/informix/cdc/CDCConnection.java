@@ -14,7 +14,9 @@ import com.conforama.informix.cdc.exceptions.CDCErrorCodeImpl;
 import com.conforama.informix.cdc.exceptions.CDCException;
 import com.conforama.informix.cdc.model.CDCMessageFactory;
 import com.conforama.informix.cdc.model.common.CDCRecord;
+import com.google.common.base.Preconditions;
 import com.informix.jdbc.IfxSmartBlob;
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,8 @@ public final class CDCConnection {
     private Connection connection;
     private int sessionID;
     private int nextUserData = 0;
+
+    private final HikariDataSource dataSource;
 
     /**
      * Create a new CDC connection.
@@ -46,7 +50,10 @@ public final class CDCConnection {
      * @param connectionDetails the connection details
      */
     public CDCConnection(CDCConnectionDetails connectionDetails) {
+        Preconditions.checkNotNull(connectionDetails);
         this.connectionDetails = connectionDetails;
+        dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(connectionDetails.getJDBCUrl());
     }
 
     /**
@@ -144,11 +151,8 @@ public final class CDCConnection {
         }
 
         try {
-            if (connectionDetails.isDebugging()) {
-                DriverManager.setLogWriter(new PrintWriter(System.out));
-            }
             log.debug("[connect] Connect to database");
-            connection = DriverManager.getConnection(connectionDetails.getJDBCUrl());
+            connection = dataSource.getConnection();
             connection.setReadOnly(true);
         } catch (SQLException ex) {
             log.error("CDCConnection: unable to connect to the database", ex);
@@ -372,7 +376,7 @@ public final class CDCConnection {
         IfxSmartBlob smartBlob = new IfxSmartBlob(getSQLConnection());
         int availableBytes = smartBlob.IfxLoRead(getCDCSessionID(), b, b.length);
         // < recordSize
-        return CDCMessageFactory.createCDCRecords(b, availableBytes, this);
+        return CDCMessageFactory.createCDCRecords(b, availableBytes);
     }
 
     /**
