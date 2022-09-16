@@ -129,12 +129,11 @@ public final class CDCConnection {
     /**
      * This opens a connection to the database and creates a CDC Session
      *
-     * @throws Exception if unable to connect
      */
-    public void connect() throws Exception {
+    public void connect() {
 
         if (connectionDetails == null) {
-            throw new Exception("CDCConnection: no connection details supplied");
+            throw new CDCException(CDCErrorCodeImpl.NO_CONNECTION_DETAIL);
         }
 
         try {
@@ -152,7 +151,8 @@ public final class CDCConnection {
             connection = DriverManager.getConnection(connectionDetails.getJDBCUrl());
             connection.setReadOnly(true);
         } catch (SQLException ex) {
-            throw new Exception("CDCConnection: unable to connect to the database : " + ex.getLocalizedMessage(), ex);
+            log.error("CDCConnection: unable to connect to the database", ex);
+            throw new CDCException(CDCErrorCodeImpl.CANNOT_CONNECT);
         }
 
         try (CallableStatement cstmt = connection.prepareCall("execute function informix.cdc_opensess(?,?,?,?,?,?)")) {
@@ -186,10 +186,12 @@ public final class CDCConnection {
             if (sessionID < 0) {
                 int errCode = rs.getInt(1);
                 rs.close();
-                throw new Exception("CDCConnection: Unable to get CDC session: " + getErrorDescription(errCode));
+                log.error("CDCConnection: Unable to get CDC session: {}", getErrorDescription(errCode));
+                throw new CDCException(CDCErrorCodeImpl.UNABLE_TO_GET_CDC_CONNECTION);
             }
         } catch (SQLException ex) {
-            throw new Exception("CDCConnection: unable to open cdc session " + ex.getLocalizedMessage(), ex);
+            log.error("CDCConnection: unable to open cdc session", ex);
+            throw new CDCException(CDCErrorCodeImpl.UNABLE_TO_OPEN_CDC_CONNECTION);
         }
     }
 
