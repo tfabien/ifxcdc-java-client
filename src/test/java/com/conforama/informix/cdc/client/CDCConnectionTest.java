@@ -131,7 +131,7 @@ public class CDCConnectionTest {
 		log.debug("Start capture");
 		cdcConnection.startCapture(0);
 		insertTestTableRecord();
-		Vector<CDCRecord> cdcRecords;
+		List<CDCRecord> cdcRecords;
 		boolean exit = false;
 		do {
 			log.debug("Reading...");

@@ -13,6 +13,7 @@ public class CDCTimeoutRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isTimeoutRecord() {
 		return true;
 	}

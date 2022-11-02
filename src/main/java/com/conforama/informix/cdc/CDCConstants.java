@@ -6,6 +6,8 @@
 package com.conforama.informix.cdc;
 
 public final class CDCConstants {
+	private CDCConstants() {
+	}
 
 	// select * from syscdcrectypes
 

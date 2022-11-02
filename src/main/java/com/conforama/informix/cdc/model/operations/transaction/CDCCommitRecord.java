@@ -17,6 +17,7 @@ public class CDCCommitRecord extends CDCRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isCommitRecord() {
 		return true;
 	}

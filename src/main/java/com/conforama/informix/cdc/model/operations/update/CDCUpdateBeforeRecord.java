@@ -9,6 +9,7 @@ public class CDCUpdateBeforeRecord extends CDCOperationRecord {
 		super(header);
 	}
 
+	@Override
 	public boolean isUpdateBeforeRecord() {
 		return true;
 	}

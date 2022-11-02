@@ -7,8 +7,7 @@ import com.conforama.informix.cdc.model.common.CDCRecord;
  * The interface for receiving events from a {@link CDCConnection}.
  * <P>
  * Such a listener may be added using the
- * {@link CDCConnection#addCDCRecordListener(CDCRecordListener)} method.
- * 
+ *
  * @author pwalsh
  * 
  */
@@ -21,6 +20,6 @@ public interface CDCRecordListener {
 	 * @param record
 	 *            a CDC Record
 	 */
-	public void onCDCRecord(CDCRecord record);
+	void onCDCRecord(CDCRecord record);
 
 }
